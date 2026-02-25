@@ -14,7 +14,7 @@
       "description": "task 2 description",
       "dueDate": "2025-12-05",
       "priority": "Medium",
-      "column": "done"
+      "column": "in progress"
     },
     {
       "id": "2223",
@@ -30,7 +30,7 @@
       "description": "task 1 description",
       "dueDate": "2025-11-05",
       "priority": "Low",
-      "column": "done"
+      "column": "blocked"
     },
     {
       "id": "6",
@@ -38,7 +38,7 @@
       "description": "work on api implementation and system design",
       "dueDate": "2025-09-05",
       "priority": "Medium",
-      "column": "done"
+      "column": "in progress"
     },
     {
       "id": "8",
@@ -62,7 +62,7 @@
       "description": "task 1 description",
       "dueDate": "2025-11-15",
       "priority": "Low",
-      "column": "in progress"
+      "column": "todo"
     },
     {
       "id": "12",
@@ -70,7 +70,7 @@
       "description": "task 3 description",
       "dueDate": "2025-12-29",
       "priority": "High",
-      "column": "blocked"
+      "column": "done"
     },
     {
       "id": "13",
@@ -78,7 +78,7 @@
       "description": "task 3 description",
       "dueDate": "2025-12-29",
       "priority": "High",
-      "column": "blocked"
+      "column": "done"
     },
     {
       "id": "14",
@@ -86,7 +86,7 @@
       "description": "task 3 description",
       "dueDate": "2025-12-29",
       "priority": "High",
-      "column": "blocked"
+      "column": "in progress"
     },
     {
       "id": "15",
@@ -110,7 +110,7 @@
       "description": "task 3 description",
       "dueDate": "2025-12-29",
       "priority": "High",
-      "column": "blocked"
+      "column": "in progress"
     },
     {
       "id": "18",
@@ -169,7 +169,7 @@
       "description": "adding new task",
       "dueDate": "November 26, 2025",
       "priority": "Medium",
-      "column": "todo"
+      "column": "in progress"
     },
     {
       "id": "697dea45-3ef4-4f74-bcd5-d3cfc6d49da0",
