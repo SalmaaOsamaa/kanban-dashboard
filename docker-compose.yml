@@ -1,0 +1,21 @@
+services:
+  api:
+    build:
+      context: .
+      target: api
+    volumes:
+      - api-data:/app/data
+    restart: unless-stopped
+
+  caddy:
+    build:
+      context: .
+      target: caddy
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  api-data:
