@@ -10,22 +10,68 @@ interface ColumnProps {
   onAddTask: () => void;
   onEditTask: (task: Task) => void;
   onDeleteTask: (taskId: string) => void;
-  isOver : boolean
+  isOver: boolean;
+  dropIndicatorIndex: number | null;
+  activeTaskId: string | null;
 }
 
-const Column = ({ column, isOver, onAddTask, onEditTask, onDeleteTask }: ColumnProps) => {
+const DropIndicator = ({ color }: { color: string }) => (
+  <Box
+    sx={{
+      height: 4,
+      borderRadius: 2,
+      bgcolor: color,
+      mb: 2,
+      mx: 0.5,
+      boxShadow: `0 0 8px ${color}`,
+      animation: 'pulse 1s ease-in-out infinite',
+      '@keyframes pulse': {
+        '0%, 100%': { opacity: 0.7, transform: 'scaleX(0.98)' },
+        '50%': { opacity: 1, transform: 'scaleX(1)' },
+      },
+    }}
+  />
+);
+
+const Column = ({ column, isOver, dropIndicatorIndex, activeTaskId, onAddTask, onEditTask, onDeleteTask }: ColumnProps) => {
   const { setNodeRef } = useDroppable({ id: column.id });
+
+  const renderTasksWithIndicator = () => {
+    const elements: React.ReactNode[] = [];
+    const tasks = column.tasks.filter(t => t.id !== activeTaskId);
+
+    tasks.forEach((task, index) => {
+      if (dropIndicatorIndex === index) {
+        elements.push(<DropIndicator key="drop-indicator" color={column.color} />);
+      }
+      elements.push(
+        <TaskCard
+          key={task.id}
+          task={task}
+          onEdit={() => onEditTask(task)}
+          onDelete={() => onDeleteTask(task.id)}
+        />
+      );
+    });
+
+    // Show indicator at the end if dropping after all tasks
+    if (dropIndicatorIndex !== null && dropIndicatorIndex >= tasks.length) {
+      elements.push(<DropIndicator key="drop-indicator" color={column.color} />);
+    }
+
+    return elements;
+  };
 
   return (
     <Box
-    sx={{
-      width: 320, minWidth: 320, borderRadius: 3, p: 2,
-      display: 'flex', flexDirection: 'column',
-      bgcolor: isOver ? '#ede9fe' : '#f3f4f6',
-      outline: isOver ? `2px solid ${column.color}` : '2px solid transparent',
-      transition: 'background-color 0.2s ease, outline 0.2s ease',
-    }}
-  >
+      sx={{
+        width: 320, minWidth: 320, borderRadius: 3, p: 2,
+        display: 'flex', flexDirection: 'column',
+        bgcolor: isOver ? '#ede9fe' : '#f3f4f6',
+        outline: isOver ? `2px solid ${column.color}` : '2px solid transparent',
+        transition: 'background-color 0.2s ease, outline 0.2s ease',
+      }}
+    >
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 3, px: 1 }}>
         <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: column.color, mr: 1.5 }} />
         <Typography variant="subtitle2" sx={{ color: '#4b5563', letterSpacing: '0.05em' }}>{column.title}</Typography>
@@ -34,24 +80,16 @@ const Column = ({ column, isOver, onAddTask, onEditTask, onDeleteTask }: ColumnP
         </Box>
       </Box>
       <SortableContext items={column.tasks.map(t => t.id)} strategy={verticalListSortingStrategy}>
-
         <Box
           ref={setNodeRef}
           sx={{
             flexGrow: 1, overflowY: 'auto', minHeight: 60,
-            borderRadius: 2, transition: 'background 0.2s',
-            bgcolor: isOver ? '#e0e7ff' : 'transparent',
+            borderRadius: 2, transition: 'background 0.2s, padding 0.2s',
+            bgcolor: isOver ? 'rgba(224, 231, 255, 0.5)' : 'transparent',
             p: isOver ? 1 : 0,
           }}
         >
-          {column.tasks.map((task) => (
-            <TaskCard
-              key={task.id}
-              task={task}
-              onEdit={() => onEditTask(task)}
-              onDelete={() => onDeleteTask(task.id)}
-            />
-          ))}
+          {renderTasksWithIndicator()}
         </Box>
       </SortableContext>
       <Box

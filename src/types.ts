@@ -5,6 +5,7 @@ export interface Task {
     priority: 'HIGH' | 'MEDIUM' | 'LOW';
     dueDate : string | null;
     column : string;
+    order?: number;
   }
   
   export interface Column {

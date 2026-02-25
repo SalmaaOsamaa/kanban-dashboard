@@ -22,9 +22,14 @@ interface BoardProps {
   onAddTask: (colId: string) => void;
   onEditTask: (colId: string, task: Task) => void;
   onDeleteTask: (taskId: string) => void;
-  onMoveTask: (taskId: string, newColumn: string) => void;
-
+  onMoveTask: (taskId: string, newColumn: string, targetIndex: number) => void;
 }
+
+interface DropIndicator {
+  columnId: string;
+  index: number;
+}
+
 const dropAnimation: DropAnimation = {
   sideEffects: defaultDropAnimationSideEffects({
     styles: {
@@ -32,15 +37,18 @@ const dropAnimation: DropAnimation = {
     },
   }),
   duration: 250,
-  easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)', // slight overshoot = landing bounce
+  easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)',
 };
-const Board = ({ columns, onAddTask, onEditTask, onDeleteTask,onMoveTask }: BoardProps) => {
+
+const Board = ({ columns, onAddTask, onEditTask, onDeleteTask, onMoveTask }: BoardProps) => {
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [overColumnId, setOverColumnId] = useState<string | null>(null);
+  const [dropIndicator, setDropIndicator] = useState<DropIndicator | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
   );
+
   const handleDragStart = (event: DragStartEvent) => {
     const task = columns.flatMap(c => c.tasks).find(t => t.id === event.active.id);
     setActiveTask(task ?? null);
@@ -48,19 +56,40 @@ const Board = ({ columns, onAddTask, onEditTask, onDeleteTask,onMoveTask }: Boar
 
   const handleDragOver = (event: DragOverEvent) => {
     const { over } = event;
-    if (!over) { setOverColumnId(null); return; }
+    if (!over) {
+      setOverColumnId(null);
+      setDropIndicator(null);
+      return;
+    }
 
     const overId = over.id as string;
     const targetColumn = columns.find(col =>
       col.id === overId || col.tasks.some(t => t.id === overId)
     );
-    setOverColumnId(targetColumn?.id ?? null);
+
+    if (!targetColumn) {
+      setOverColumnId(null);
+      setDropIndicator(null);
+      return;
+    }
+
+    setOverColumnId(targetColumn.id);
+
+    const isOverColumn = targetColumn.id === overId;
+    if (isOverColumn) {
+      setDropIndicator({ columnId: targetColumn.id, index: targetColumn.tasks.length });
+    } else {
+      const taskIndex = targetColumn.tasks.findIndex(t => t.id === overId);
+      setDropIndicator({ columnId: targetColumn.id, index: taskIndex });
+    }
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
+    const currentDropIndicator = dropIndicator;
     setActiveTask(null);
     setOverColumnId(null);
+    setDropIndicator(null);
     if (!over) return;
 
     const taskId = active.id as string;
@@ -74,7 +103,11 @@ const Board = ({ columns, onAddTask, onEditTask, onDeleteTask,onMoveTask }: Boar
     const sourceColumn = columns.find(col => col.tasks.some(t => t.id === taskId));
     if (!sourceColumn || sourceColumn.id === targetColumn.id) return;
 
-    onMoveTask(taskId, targetColumn.id);
+    const targetIndex = currentDropIndicator?.columnId === targetColumn.id 
+      ? currentDropIndicator.index 
+      : targetColumn.tasks.length;
+
+    onMoveTask(taskId, targetColumn.id, targetIndex);
   };
  
 
@@ -92,6 +125,8 @@ const Board = ({ columns, onAddTask, onEditTask, onDeleteTask,onMoveTask }: Boar
             key={column.id}
             column={column}
             isOver={overColumnId === column.id}
+            dropIndicatorIndex={dropIndicator?.columnId === column.id ? dropIndicator.index : null}
+            activeTaskId={activeTask?.id ?? null}
             onAddTask={() => onAddTask(column.id)}
             onEditTask={(task) => onEditTask(column.id, task)}
             onDeleteTask={onDeleteTask}
@@ -99,7 +134,6 @@ const Board = ({ columns, onAddTask, onEditTask, onDeleteTask,onMoveTask }: Boar
         ))}
       </Box>
 
-      {/* Renders the floating card while dragging */}
     
       <DragOverlay dropAnimation={dropAnimation}>
         {activeTask && (

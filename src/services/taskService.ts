@@ -1,8 +1,9 @@
 // this file will be interacting with the apis to get the task data and also perform all the CRUD operations on the task
 
 import {config} from '../config'
-import type {Task} from '../types'
-import type { TaskFormState } from '../types';
+import type {Task, TaskFormState} from '../types'
+
+export type TaskUpdate = Partial<TaskFormState> & { order?: number };
 
 export const taskService = {
     getAll: async (): Promise<Task[]> => {
@@ -19,7 +20,7 @@ export const taskService = {
         if (!res.ok) throw new Error('Failed to create task');
         return res.json();
       },
-      update: async (id: string, data: Partial<TaskFormState>): Promise<Task> => {
+      update: async (id: string, data: TaskUpdate): Promise<Task> => {
         const res = await fetch(`${config.apiURL}/tasks/${id}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },

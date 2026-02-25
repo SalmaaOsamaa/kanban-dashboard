@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import type { Task, Column, TaskFormState } from '../types';
-import { taskService } from '../services/taskService';
+import { taskService, type TaskUpdate } from '../services/taskService';
 
 const COLUMN_CONFIG = [
   { id: 'todo',        title: 'TO DO',       color: '#3b82f6' },
@@ -37,7 +37,7 @@ export const useTaskBoard = () => {
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Partial<TaskFormState> }) =>
+    mutationFn: ({ id, data }: { id: string; data: TaskUpdate }) =>
       taskService.update(id, data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tasks'] }),
   });
@@ -50,7 +50,9 @@ export const useTaskBoard = () => {
 
   const columns: Column[] = COLUMN_CONFIG.map(col => ({
     ...col,
-    tasks: tasks.filter(t => t.column === col.id),
+    tasks: tasks
+      .filter(t => t.column === col.id)
+      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0)),
   }));
 
   const totalTasks = tasks.length;
@@ -92,8 +94,25 @@ export const useTaskBoard = () => {
     setDialogOpen(false);
   };
 
-  const handleMoveTask = (taskId: string, newColumn: string) => {
-    updateMutation.mutate({ id: taskId, data: { column: newColumn } });
+  const handleMoveTask = (taskId: string, newColumn: string, targetIndex: number) => {
+    const targetColumnTasks = tasks
+      .filter(t => t.column === newColumn && t.id !== taskId)
+      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+    let newOrder: number;
+    if (targetColumnTasks.length === 0) {
+      newOrder = 1000;
+    } else if (targetIndex === 0) {
+      newOrder = (targetColumnTasks[0].order ?? 1000) - 1000;
+    } else if (targetIndex >= targetColumnTasks.length) {
+      newOrder = (targetColumnTasks[targetColumnTasks.length - 1].order ?? 0) + 1000;
+    } else {
+      const prevOrder = targetColumnTasks[targetIndex - 1].order ?? 0;
+      const nextOrder = targetColumnTasks[targetIndex].order ?? prevOrder + 2000;
+      newOrder = (prevOrder + nextOrder) / 2;
+    }
+
+    updateMutation.mutate({ id: taskId, data: { column: newColumn, order: newOrder } });
   }; 
   return {
     columns,
