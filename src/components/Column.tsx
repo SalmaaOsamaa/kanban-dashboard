@@ -2,17 +2,16 @@ import { useRef, useEffect, useCallback } from 'react';
 import { Box, Typography, CircularProgress } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import TaskCard from './TaskCard';
-import type { ColumnConfig, Task } from '../types';
+import type { ColumnConfig } from '../types';
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { useColumnTasks } from '../hooks/useColumnTasks';
+import { useSearchStore } from '../store/useSearchStore';
+import { useUIStore } from '../store/useUIStore';
+import { useTaskMutations } from '../hooks/useTaskMutations';
 
 interface ColumnProps {
   column: ColumnConfig;
-  searchQuery: string;
-  onAddTask: () => void;
-  onEditTask: (task: Task) => void;
-  onDeleteTask: (taskId: string) => void;
   isOver: boolean;
   dropIndicatorIndex: number | null;
   activeTaskId: string | null;
@@ -36,9 +35,15 @@ const DropIndicator = ({ color }: { color: string }) => (
   />
 );
 
-const Column = ({ column, searchQuery, isOver, dropIndicatorIndex, activeTaskId, onAddTask, onEditTask, onDeleteTask }: ColumnProps) => {
+const Column = ({ column, isOver, dropIndicatorIndex, activeTaskId }: ColumnProps) => {
   const { setNodeRef } = useDroppable({ id: column.id });
-  const { tasks, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useColumnTasks(column.id, searchQuery);
+  const debouncedSearch = useSearchStore((s) => s.debouncedSearch);
+  const openAddDialog = useUIStore((s) => s.openAddDialog);
+  const openEditDialog = useUIStore((s) => s.openEditDialog);
+  const { handleDelete } = useTaskMutations();
+
+  const { tasks, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useColumnTasks(column.id, debouncedSearch);
 
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
@@ -78,8 +83,8 @@ const Column = ({ column, searchQuery, isOver, dropIndicatorIndex, activeTaskId,
         <TaskCard
           key={task.id}
           task={task}
-          onEdit={() => onEditTask(task)}
-          onDelete={() => onDeleteTask(task.id)}
+          onEdit={() => openEditDialog(column.id, task)}
+          onDelete={() => handleDelete(task.id)}
         />
       );
     });
@@ -149,7 +154,7 @@ const Column = ({ column, searchQuery, isOver, dropIndicatorIndex, activeTaskId,
         </Box>
       </SortableContext>
       <Box
-        onClick={onAddTask}
+        onClick={() => openAddDialog(column.id)}
         sx={{
           mt: 1, p: 1.5,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
