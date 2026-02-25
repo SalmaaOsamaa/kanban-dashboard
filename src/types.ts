@@ -8,11 +8,24 @@ export interface Task {
     order?: number;
   }
   
-  export interface Column {
+  export interface ColumnConfig {
     id: string;
     title: string;
     color: string;
+  }
+
+  export interface Column extends ColumnConfig {
     tasks: Task[];
+  }
+
+  export interface PaginatedResponse {
+    data: Task[];
+    first: number;
+    prev: number | null;
+    next: number | null;
+    last: number;
+    pages: number;
+    items: number;
   }
   
   export interface TaskFormState {

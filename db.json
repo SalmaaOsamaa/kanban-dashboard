@@ -53,6 +53,366 @@
       "priority": "HIGH",
       "column": "blocked",
       "order": 1000
+    },
+    {
+      "id": "t001",
+      "title": "Set up CI/CD pipeline",
+      "description": "Configure GitHub Actions for automated testing and deployment",
+      "dueDate": "March 5, 2026",
+      "priority": "HIGH",
+      "column": "todo",
+      "order": 1000
+    },
+    {
+      "id": "t002",
+      "title": "Design login page",
+      "description": "Create wireframes and final design for the user login page",
+      "dueDate": "March 3, 2026",
+      "priority": "HIGH",
+      "column": "todo",
+      "order": 2000
+    },
+    {
+      "id": "t003",
+      "title": "Write unit tests for auth module",
+      "description": "Add comprehensive unit tests covering login, logout, and token refresh flows",
+      "dueDate": "March 10, 2026",
+      "priority": "Medium",
+      "column": "todo",
+      "order": 3000
+    },
+    {
+      "id": "t004",
+      "title": "Add dark mode support",
+      "description": "Implement theme toggling between light and dark modes across the app",
+      "dueDate": null,
+      "priority": "LOW",
+      "column": "todo",
+      "order": 4000
+    },
+    {
+      "id": "t005",
+      "title": "Create user profile page",
+      "description": "Build a page where users can view and edit their profile information",
+      "dueDate": "March 12, 2026",
+      "priority": "Medium",
+      "column": "todo",
+      "order": 5000
+    },
+    {
+      "id": "t006",
+      "title": "Implement search functionality",
+      "description": "Add full-text search across tasks with debounced input",
+      "dueDate": "March 8, 2026",
+      "priority": "HIGH",
+      "column": "todo",
+      "order": 6000
+    },
+    {
+      "id": "t007",
+      "title": "Optimize bundle size",
+      "description": "Analyze webpack bundle and reduce overall JS payload by lazy loading routes",
+      "dueDate": null,
+      "priority": "LOW",
+      "column": "todo",
+      "order": 7000
+    },
+    {
+      "id": "t008",
+      "title": "Set up error monitoring",
+      "description": "Integrate Sentry for frontend error tracking and alerting",
+      "dueDate": "March 15, 2026",
+      "priority": "Medium",
+      "column": "todo",
+      "order": 8000
+    },
+    {
+      "id": "t009",
+      "title": "Create onboarding tour",
+      "description": "Build an interactive walkthrough for new users on first login",
+      "dueDate": "March 20, 2026",
+      "priority": "LOW",
+      "column": "todo",
+      "order": 9000
+    },
+    {
+      "id": "t010",
+      "title": "Add email notifications",
+      "description": "Send email alerts when tasks are assigned or due dates approach",
+      "dueDate": "March 18, 2026",
+      "priority": "Medium",
+      "column": "todo",
+      "order": 10000
+    },
+    {
+      "id": "t011",
+      "title": "Implement drag-and-drop reorder within column",
+      "description": "Allow users to reorder tasks within the same column via drag and drop",
+      "dueDate": "March 6, 2026",
+      "priority": "HIGH",
+      "column": "in progress",
+      "order": 3000
+    },
+    {
+      "id": "t012",
+      "title": "Build REST API for task CRUD",
+      "description": "Create Express endpoints for creating, reading, updating, and deleting tasks",
+      "dueDate": "March 4, 2026",
+      "priority": "HIGH",
+      "column": "in progress",
+      "order": 4000
+    },
+    {
+      "id": "t013",
+      "title": "Add form validation",
+      "description": "Validate all task form fields before submission with user-friendly error messages",
+      "dueDate": "March 7, 2026",
+      "priority": "Medium",
+      "column": "in progress",
+      "order": 5000
+    },
+    {
+      "id": "t014",
+      "title": "Implement pagination for task list",
+      "description": "Add server-side pagination to handle large numbers of tasks efficiently",
+      "dueDate": "March 9, 2026",
+      "priority": "Medium",
+      "column": "in progress",
+      "order": 6000
+    },
+    {
+      "id": "t015",
+      "title": "Style task cards with priority colors",
+      "description": "Apply visual indicators on task cards based on their priority level",
+      "dueDate": null,
+      "priority": "LOW",
+      "column": "in progress",
+      "order": 7000
+    },
+    {
+      "id": "t016",
+      "title": "Integrate date picker component",
+      "description": "Replace plain text date input with a proper date picker for due dates",
+      "dueDate": "March 5, 2026",
+      "priority": "Medium",
+      "column": "in progress",
+      "order": 8000
+    },
+    {
+      "id": "t017",
+      "title": "Add loading skeletons",
+      "description": "Show skeleton placeholders while tasks are being fetched from the server",
+      "dueDate": null,
+      "priority": "LOW",
+      "column": "in progress",
+      "order": 9000
+    },
+    {
+      "id": "t018",
+      "title": "Refactor state management",
+      "description": "Migrate from prop drilling to React Query for server state management",
+      "dueDate": "March 11, 2026",
+      "priority": "HIGH",
+      "column": "in progress",
+      "order": 10000
+    },
+    {
+      "id": "t019",
+      "title": "Fix task deletion not updating UI",
+      "description": "Deleting a task removes it from the server but the UI does not refresh",
+      "dueDate": "March 2, 2026",
+      "priority": "HIGH",
+      "column": "blocked",
+      "order": 2000
+    },
+    {
+      "id": "t020",
+      "title": "Resolve CORS issue on staging",
+      "description": "API calls from the frontend are blocked by CORS policy on the staging server",
+      "dueDate": "March 3, 2026",
+      "priority": "HIGH",
+      "column": "blocked",
+      "order": 3000
+    },
+    {
+      "id": "t021",
+      "title": "Fix drag-and-drop on mobile",
+      "description": "Drag and drop does not work on touch devices due to pointer event handling",
+      "dueDate": "March 8, 2026",
+      "priority": "Medium",
+      "column": "blocked",
+      "order": 4000
+    },
+    {
+      "id": "t022",
+      "title": "Database migration stuck",
+      "description": "PostgreSQL migration fails on the shared dev database, blocking schema changes",
+      "dueDate": "March 4, 2026",
+      "priority": "HIGH",
+      "column": "blocked",
+      "order": 5000
+    },
+    {
+      "id": "t023",
+      "title": "Third-party API rate limit hit",
+      "description": "External notification service rate limits are causing delivery failures",
+      "dueDate": null,
+      "priority": "Medium",
+      "column": "blocked",
+      "order": 6000
+    },
+    {
+      "id": "t024",
+      "title": "Waiting for design assets",
+      "description": "Cannot proceed with the dashboard redesign until new icons and illustrations arrive",
+      "dueDate": "March 10, 2026",
+      "priority": "LOW",
+      "column": "blocked",
+      "order": 7000
+    },
+    {
+      "id": "t025",
+      "title": "SSL certificate expired on dev server",
+      "description": "HTTPS connections to the dev environment are failing due to an expired cert",
+      "dueDate": "February 28, 2026",
+      "priority": "HIGH",
+      "column": "blocked",
+      "order": 8000
+    },
+    {
+      "id": "t026",
+      "title": "Fix flaky integration tests",
+      "description": "Several integration tests fail intermittently due to race conditions",
+      "dueDate": "March 6, 2026",
+      "priority": "Medium",
+      "column": "blocked",
+      "order": 9000
+    },
+    {
+      "id": "t027",
+      "title": "Set up project repository",
+      "description": "Initialize Git repo, add README, and configure branch protection rules",
+      "dueDate": null,
+      "priority": "HIGH",
+      "column": "done",
+      "order": 1000
+    },
+    {
+      "id": "t028",
+      "title": "Create initial wireframes",
+      "description": "Design low-fidelity wireframes for all major screens of the application",
+      "dueDate": "February 10, 2026",
+      "priority": "HIGH",
+      "column": "done",
+      "order": 2000
+    },
+    {
+      "id": "t029",
+      "title": "Set up development environment",
+      "description": "Configure Vite, TypeScript, ESLint, and Prettier for the frontend project",
+      "dueDate": "February 12, 2026",
+      "priority": "HIGH",
+      "column": "done",
+      "order": 3000
+    },
+    {
+      "id": "t030",
+      "title": "Implement basic column layout",
+      "description": "Build the four-column Kanban board layout with responsive grid",
+      "dueDate": "February 15, 2026",
+      "priority": "HIGH",
+      "column": "done",
+      "order": 4000
+    },
+    {
+      "id": "t031",
+      "title": "Add task creation dialog",
+      "description": "Build a modal dialog for creating new tasks with title, description, and priority",
+      "dueDate": "February 17, 2026",
+      "priority": "Medium",
+      "column": "done",
+      "order": 5000
+    },
+    {
+      "id": "t032",
+      "title": "Connect frontend to JSON server",
+      "description": "Wire up API calls from React to json-server for persistent task storage",
+      "dueDate": "February 18, 2026",
+      "priority": "Medium",
+      "column": "done",
+      "order": 6000
+    },
+    {
+      "id": "t033",
+      "title": "Implement task editing",
+      "description": "Allow users to click a task card to open the edit dialog with pre-filled data",
+      "dueDate": "February 20, 2026",
+      "priority": "Medium",
+      "column": "done",
+      "order": 7000
+    },
+    {
+      "id": "t034",
+      "title": "Add task delete confirmation",
+      "description": "Show a confirmation prompt before permanently deleting a task",
+      "dueDate": "February 20, 2026",
+      "priority": "LOW",
+      "column": "done",
+      "order": 8000
+    },
+    {
+      "id": "t035",
+      "title": "Implement cross-column drag and drop",
+      "description": "Enable moving tasks between columns using dnd-kit with smooth animations",
+      "dueDate": "February 22, 2026",
+      "priority": "HIGH",
+      "column": "done",
+      "order": 9000
+    },
+    {
+      "id": "t036",
+      "title": "Add responsive header",
+      "description": "Create the app header with logo, search bar, and task count",
+      "dueDate": "February 14, 2026",
+      "priority": "Medium",
+      "column": "done",
+      "order": 10000
+    },
+    {
+      "id": "t037",
+      "title": "Write API documentation",
+      "description": "Document all json-server endpoints with request and response examples",
+      "dueDate": "February 23, 2026",
+      "priority": "LOW",
+      "column": "done",
+      "order": 11000
+    },
+    {
+      "id": "t038",
+      "title": "Add keyboard shortcuts",
+      "description": "Implement keyboard shortcuts for common actions like creating and deleting tasks",
+      "dueDate": null,
+      "priority": "LOW",
+      "column": "todo",
+      "order": 11000
+    },
+    {
+      "id": "t039",
+      "title": "Implement role-based access control",
+      "description": "Add user roles (admin, editor, viewer) with appropriate permission checks",
+      "dueDate": "March 25, 2026",
+      "priority": "HIGH",
+      "column": "todo",
+      "order": 12000
+    },
+    {
+      "id": "t040",
+      "title": "Add export to CSV feature",
+      "description": "Allow users to export all tasks as a CSV file for reporting purposes",
+      "dueDate": "March 22, 2026",
+      "priority": "Medium",
+      "column": "todo",
+      "order": 13000
     }
   ]
 }

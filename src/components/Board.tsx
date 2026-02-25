@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Box } from '@mui/material';
+import { useQueryClient, type InfiniteData } from '@tanstack/react-query';
 import Column from './Column';
 import TaskCard from './TaskCard';
-import type { Column as ColumnType, Task } from '../types';
+import type { ColumnConfig, Column as ColumnType, Task, PaginatedResponse } from '../types';
 import {
   DndContext,
   DragOverlay,
@@ -18,14 +19,15 @@ import {
 } from '@dnd-kit/core';
 
 interface BoardProps {
-  columns: ColumnType[];
+  columnConfig: ColumnConfig[];
+  searchQuery: string;
   onAddTask: (colId: string) => void;
   onEditTask: (colId: string, task: Task) => void;
   onDeleteTask: (taskId: string) => void;
   onMoveTask: (taskId: string, newColumn: string, targetIndex: number) => void;
 }
 
-interface DropIndicator {
+interface DropIndicatorState {
   columnId: string;
   index: number;
 }
@@ -40,16 +42,29 @@ const dropAnimation: DropAnimation = {
   easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)',
 };
 
-const Board = ({ columns, onAddTask, onEditTask, onDeleteTask, onMoveTask }: BoardProps) => {
+const Board = ({ columnConfig, searchQuery, onAddTask, onEditTask, onDeleteTask, onMoveTask }: BoardProps) => {
+  const queryClient = useQueryClient();
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [overColumnId, setOverColumnId] = useState<string | null>(null);
-  const [dropIndicator, setDropIndicator] = useState<DropIndicator | null>(null);
+  const [dropIndicator, setDropIndicator] = useState<DropIndicatorState | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
   );
 
+  const getColumnsSnapshot = useCallback((): ColumnType[] => {
+    return columnConfig.map(col => {
+      const data = queryClient.getQueryData<InfiniteData<PaginatedResponse, number>>(
+        ['column-tasks', col.id, searchQuery]
+      );
+      const tasks = (data?.pages.flatMap(p => p.data) ?? [])
+        .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+      return { ...col, tasks };
+    });
+  }, [columnConfig, searchQuery, queryClient]);
+
   const handleDragStart = (event: DragStartEvent) => {
+    const columns = getColumnsSnapshot();
     const task = columns.flatMap(c => c.tasks).find(t => t.id === event.active.id);
     setActiveTask(task ?? null);
   };
@@ -62,6 +77,7 @@ const Board = ({ columns, onAddTask, onEditTask, onDeleteTask, onMoveTask }: Boa
       return;
     }
 
+    const columns = getColumnsSnapshot();
     const overId = over.id as string;
     const targetColumn = columns.find(col =>
       col.id === overId || col.tasks.some(t => t.id === overId)
@@ -92,6 +108,7 @@ const Board = ({ columns, onAddTask, onEditTask, onDeleteTask, onMoveTask }: Boa
     setDropIndicator(null);
     if (!over) return;
 
+    const columns = getColumnsSnapshot();
     const taskId = active.id as string;
     const overId = over.id as string;
 
@@ -103,38 +120,37 @@ const Board = ({ columns, onAddTask, onEditTask, onDeleteTask, onMoveTask }: Boa
     const sourceColumn = columns.find(col => col.tasks.some(t => t.id === taskId));
     if (!sourceColumn || sourceColumn.id === targetColumn.id) return;
 
-    const targetIndex = currentDropIndicator?.columnId === targetColumn.id 
-      ? currentDropIndicator.index 
+    const targetIndex = currentDropIndicator?.columnId === targetColumn.id
+      ? currentDropIndicator.index
       : targetColumn.tasks.length;
 
     onMoveTask(taskId, targetColumn.id, targetIndex);
   };
- 
 
   return (
     <DndContext
-    sensors={sensors}
-    collisionDetection={closestCorners}
-    onDragStart={handleDragStart}
-    onDragOver={handleDragOver}
-    onDragEnd={handleDragEnd}
+      sensors={sensors}
+      collisionDetection={closestCorners}
+      onDragStart={handleDragStart}
+      onDragOver={handleDragOver}
+      onDragEnd={handleDragEnd}
     >
       <Box sx={{ display: 'flex', gap: 3, p: 3, overflowX: 'auto', height: 'calc(100vh - 89px)', alignItems: 'flex-start' }}>
-        {columns.map((column) => (
+        {columnConfig.map((col) => (
           <Column
-            key={column.id}
-            column={column}
-            isOver={overColumnId === column.id}
-            dropIndicatorIndex={dropIndicator?.columnId === column.id ? dropIndicator.index : null}
+            key={col.id}
+            column={col}
+            searchQuery={searchQuery}
+            isOver={overColumnId === col.id}
+            dropIndicatorIndex={dropIndicator?.columnId === col.id ? dropIndicator.index : null}
             activeTaskId={activeTask?.id ?? null}
-            onAddTask={() => onAddTask(column.id)}
-            onEditTask={(task) => onEditTask(column.id, task)}
+            onAddTask={() => onAddTask(col.id)}
+            onEditTask={(task) => onEditTask(col.id, task)}
             onDeleteTask={onDeleteTask}
           />
         ))}
       </Box>
 
-    
       <DragOverlay dropAnimation={dropAnimation}>
         {activeTask && (
           <Box sx={{

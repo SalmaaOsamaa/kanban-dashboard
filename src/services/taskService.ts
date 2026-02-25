@@ -1,7 +1,5 @@
-// this file will be interacting with the apis to get the task data and also perform all the CRUD operations on the task
-
 import {config} from '../config'
-import type {Task, TaskFormState} from '../types'
+import type {Task, TaskFormState, PaginatedResponse} from '../types'
 
 export type TaskUpdate = Partial<TaskFormState> & { order?: number };
 
@@ -11,15 +9,34 @@ export const taskService = {
         if (!res.ok) throw new Error('Failed to fetch tasks');
         const tasks: Task[] = await res.json();
 
-        // json-server v1 doesn't support ?q= full-text search,
-        // so we filter client-side. Replace with server-side param when using a real API.
         if (!search?.trim()) return tasks;
         const term = search.trim().toLowerCase();
         return tasks.filter(
           t => t.title.toLowerCase().includes(term) || t.description.toLowerCase().includes(term)
         );
       },
-      create: async (task: Omit<Task, 'id'>): Promise<Task> => {
+
+    getByColumn: async (column: string, page: number, limit: number): Promise<PaginatedResponse> => {
+        const params = new URLSearchParams({
+          column,
+          _sort: 'order',
+          _page: String(page),
+          _per_page: String(limit),
+        });
+        const res = await fetch(`${config.apiURL}/tasks?${params}`);
+        if (!res.ok) throw new Error('Failed to fetch tasks');
+        return res.json();
+      },
+
+    getCount: async (): Promise<number> => {
+        const params = new URLSearchParams({ _page: '1', _per_page: '1' });
+        const res = await fetch(`${config.apiURL}/tasks?${params}`);
+        if (!res.ok) return 0;
+        const json = await res.json();
+        return json.items ?? 0;
+      },
+
+    create: async (task: Omit<Task, 'id'>): Promise<Task> => {
         const res = await fetch(`${config.apiURL}/tasks`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -28,7 +45,8 @@ export const taskService = {
         if (!res.ok) throw new Error('Failed to create task');
         return res.json();
       },
-      update: async (id: string, data: TaskUpdate): Promise<Task> => {
+
+    update: async (id: string, data: TaskUpdate): Promise<Task> => {
         const res = await fetch(`${config.apiURL}/tasks/${id}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
@@ -37,7 +55,8 @@ export const taskService = {
         if (!res.ok) throw new Error('Failed to update task');
         return res.json();
       },
-      delete: async (id: string): Promise<void> => {
+
+    delete: async (id: string): Promise<void> => {
         const res = await fetch(`${config.apiURL}/tasks/${id}`, { method: 'DELETE' });
         if (!res.ok) throw new Error('Failed to delete task');
       },

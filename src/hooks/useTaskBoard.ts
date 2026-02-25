@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import type { Task, Column, TaskFormState } from '../types';
+import { useQuery, useMutation, useQueryClient, type InfiniteData } from '@tanstack/react-query';
+import type { Task, ColumnConfig, TaskFormState, PaginatedResponse } from '../types';
 import { taskService, type TaskUpdate } from '../services/taskService';
 import { useDebouncedValue } from './useDebouncedValue';
 
-const COLUMN_CONFIG = [
+export const COLUMN_CONFIG: ColumnConfig[] = [
   { id: 'todo',        title: 'TO DO',       color: '#3b82f6' },
   { id: 'in progress', title: 'IN PROGRESS', color: '#f59e0b' },
-  { id: 'blocked',     title: 'BLOCKED',     color: '#ef4444' },
+  { id: 'in review',   title: 'IN REVIEW',   color: '#6366f1' },
   { id: 'done',        title: 'DONE',        color: '#10b981' },
 ];
 
@@ -28,39 +28,32 @@ export const useTaskBoard = () => {
     column: 'todo',
   });
 
-  const { data: tasks = [], isLoading, isError } = useQuery({
-    queryKey: ['tasks', debouncedSearch],
-    queryFn: () => taskService.getAll(debouncedSearch),
+  const { data: totalTasks = 0 } = useQuery({
+    queryKey: ['tasks-count'],
+    queryFn: taskService.getCount,
   });
 
-  // mutations
+  const invalidateAll = () => {
+    queryClient.invalidateQueries({ queryKey: ['column-tasks'] });
+    queryClient.invalidateQueries({ queryKey: ['tasks-count'] });
+  };
+
   const createMutation = useMutation({
     mutationFn: taskService.create,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tasks'] }),
+    onSuccess: invalidateAll,
   });
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: TaskUpdate }) =>
       taskService.update(id, data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tasks'] }),
+    onSuccess: invalidateAll,
   });
 
   const deleteMutation = useMutation({
     mutationFn: taskService.delete,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tasks'] }),
+    onSuccess: invalidateAll,
   });
 
-
-  const columns: Column[] = COLUMN_CONFIG.map(col => ({
-    ...col,
-    tasks: tasks
-      .filter(t => t.column === col.id)
-      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0)),
-  }));
-
-  const totalTasks = tasks.length;
-
-  //Dialog handlers
   const handleOpenAdd = (columnId: string) => {
     setActiveColumnId(columnId);
     setEditingTask(null);
@@ -98,8 +91,11 @@ export const useTaskBoard = () => {
   };
 
   const handleMoveTask = (taskId: string, newColumn: string, targetIndex: number) => {
-    const targetColumnTasks = tasks
-      .filter(t => t.column === newColumn && t.id !== taskId)
+    const data = queryClient.getQueryData<InfiniteData<PaginatedResponse, number>>(
+      ['column-tasks', newColumn, debouncedSearch]
+    );
+    const targetColumnTasks = (data?.pages.flatMap(p => p.data) ?? [])
+      .filter(t => t.id !== taskId)
       .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
     let newOrder: number;
@@ -116,12 +112,12 @@ export const useTaskBoard = () => {
     }
 
     updateMutation.mutate({ id: taskId, data: { column: newColumn, order: newOrder } });
-  }; 
+  };
+
   return {
-    columns,
+    columnConfig: COLUMN_CONFIG,
     totalTasks,
-    isLoading,
-    isError,
+    debouncedSearch,
     searchQuery,
     setSearchQuery,
     dialogOpen,
