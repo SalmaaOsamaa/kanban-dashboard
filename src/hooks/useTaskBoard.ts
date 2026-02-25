@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import type { Task, Column, TaskFormState } from '../types';
 import { taskService, type TaskUpdate } from '../services/taskService';
+import { useDebouncedValue } from './useDebouncedValue';
 
 const COLUMN_CONFIG = [
   { id: 'todo',        title: 'TO DO',       color: '#3b82f6' },
@@ -12,6 +13,9 @@ const COLUMN_CONFIG = [
 
 export const useTaskBoard = () => {
   const queryClient = useQueryClient();
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const debouncedSearch = useDebouncedValue(searchQuery);
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [activeColumnId, setActiveColumnId] = useState('');
@@ -24,10 +28,9 @@ export const useTaskBoard = () => {
     column: 'todo',
   });
 
-  // Queries    
   const { data: tasks = [], isLoading, isError } = useQuery({
-    queryKey: ['tasks'],
-    queryFn: taskService.getAll,
+    queryKey: ['tasks', debouncedSearch],
+    queryFn: () => taskService.getAll(debouncedSearch),
   });
 
   // mutations
@@ -119,6 +122,8 @@ export const useTaskBoard = () => {
     totalTasks,
     isLoading,
     isError,
+    searchQuery,
+    setSearchQuery,
     dialogOpen,
     editingTask,
     taskForm,

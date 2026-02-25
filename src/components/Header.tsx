@@ -4,9 +4,11 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 
 interface HeaderProps {
   totalTasks: number;
+  searchQuery: string;
+  onSearchChange: (value: string) => void;
 }
 
-const Header = ({ totalTasks }: HeaderProps) => (
+const Header = ({ totalTasks, searchQuery, onSearchChange }: HeaderProps) => (
   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', p: 3, borderBottom: '1px solid #e5e7eb' }}>
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
       <Box sx={{ bgcolor: '#4f46e5', color: 'white', p: 1, borderRadius: 2, display: 'flex' }}>
@@ -20,6 +22,8 @@ const Header = ({ totalTasks }: HeaderProps) => (
     <TextField
       placeholder="Search tasks..."
       size="small"
+      value={searchQuery}
+      onChange={(e) => onSearchChange(e.target.value)}
       sx={{
         width: 300,
         '& .MuiOutlinedInput-root': {

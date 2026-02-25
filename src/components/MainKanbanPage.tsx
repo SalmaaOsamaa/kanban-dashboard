@@ -7,6 +7,7 @@ import TaskDialog from './TaskDialogue'
 const MainKanbanPage = () => {
     const {
       columns, totalTasks, isLoading, isError,
+      searchQuery, setSearchQuery,
       dialogOpen, editingTask, taskForm, setTaskForm,
       handleOpenAdd, handleOpenEdit, handleDelete,
       handleSaveTask, closeDialog, handleMoveTask
@@ -26,7 +27,7 @@ const MainKanbanPage = () => {
   
     return (
       <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', bgcolor: '#ffffff' }}>
-        <Header totalTasks={totalTasks} />
+        <Header totalTasks={totalTasks} searchQuery={searchQuery} onSearchChange={setSearchQuery} />
         <Board columns={columns} onAddTask={handleOpenAdd} onEditTask={handleOpenEdit} onDeleteTask={handleDelete}   onMoveTask={handleMoveTask} />
         <TaskDialog
           open={dialogOpen}
