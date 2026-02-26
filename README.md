@@ -1,73 +1,60 @@
-# React + TypeScript + Vite
+## Project Description
+here is a link to the project deployed on Render.com <br/> <a href="https://kanban-dashboard-tn2w.onrender.com/">Kanban-Dashboard</a> <br/>
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+- **View Tasks** - Browse Tasks in a responsive, with infinite scroll pagination
+- **Search** - Search Tasks by title and description
+- **Create Tasks** - Create new tasks specific for each column
+- **Edit Tasks** - Update task details (title, description, priority) through a modal interface
+- **Delete Tasks** - Delete tasks from columns and database
+- **Responsive Design** - Modern UI built with Tailwind CSS that works on all screen sizes
 
-Currently, two official plugins are available:
+### Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **React 19** - UI framework
+- **TypeScript** - Type safety
+- **Vite** - Build tool and dev server
+- **MUI** - UI library
+- **ReactQuery** - query client 
+- **Zustand** - state managment library
+## Getting Started
 
-## React Compiler
+### Prerequisites
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Make sure you have the following installed on your system:
 
-## Expanding the ESLint configuration
+- **Node.js** (version 21 or higher)
+- **npm** (comes with Node.js) or **yarn**
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Installation Steps
+1. Clone the repo 
+```sh
+git clone https://github.com/SalmaaOsamaa/kanban-dashboard.git
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. install dependenscies
+ ```bash
+  npm i 
+  ```
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+3. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+4. **Run Mockapi server**
+```bash
+npm run server
 ```
+5. **Open your tasks API**
+   
+   Navigate to the URL shown in your terminal (typically `http://localhost:4000/tasks`)
+
+6. **Open your browser**
+   
+   Navigate to the URL shown in your terminal (typically `http://localhost:5173`)
+
+### Available Scripts
+
+- `npm run dev` - Start the development server with hot module replacement (HMR)
+- `npm run build` - Build the application for production
+- `npm run preview` - Preview the production build locally
+- `npm run lint` - Run ESLint to check code quality
