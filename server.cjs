@@ -1,20 +1,17 @@
-const jsonServer = require('json-server');
+const { spawn } = require('child_process');
 const path = require('path');
 
-const server = jsonServer.create();
-const router = jsonServer.router(path.join(__dirname, 'db.json'));
-const middlewares = jsonServer.defaults({
-  static: path.join(__dirname, 'dist'),
-});
-
-server.use(middlewares);
-server.use(router);
-
-server.use((req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
-});
-
 const port = process.env.PORT || 10000;
-server.listen(port, '0.0.0.0', () => {
-  console.log(`Server running on port ${port}`);
+const bin = path.join(__dirname, 'node_modules', '.bin', 'json-server');
+
+const server = spawn(bin, [
+  'db.json',
+  '--static', './dist',
+  '--port', String(port),
+  '--host', '0.0.0.0',
+], {
+  stdio: 'inherit',
+  cwd: __dirname,
 });
+
+server.on('exit', (code) => process.exit(code ?? 1));

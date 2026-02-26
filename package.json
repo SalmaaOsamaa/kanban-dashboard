@@ -11,7 +11,7 @@
     "start": "node server.cjs"
   },
   "dependencies": {
-    "json-server": "^0.17.4",
+    "json-server": "^1.0.0-beta.3",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/react": "^0.3.2",
     "@dnd-kit/sortable": "^10.0.0",
