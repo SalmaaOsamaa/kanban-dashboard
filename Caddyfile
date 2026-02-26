@@ -1,9 +1,0 @@
-:80 {
-	root * /srv
-
-	@api path /tasks /tasks/*
-	reverse_proxy @api api:3000
-
-	try_files {path} /index.html
-	file_server
-}
